@@ -1,6 +1,14 @@
 import { streamText } from 'ai';
 import 'dotenv/config';
 
+// Map gateway/env variables to what the AI SDK expects.
+if (process.env.THESYSAPI && !process.env.OPENAI_API_KEY) {
+  process.env.OPENAI_API_KEY = process.env.THESYSAPI;
+}
+if (process.env.AI_GATEWAY_BASE && !process.env.OPENAI_API_BASE) {
+  process.env.OPENAI_API_BASE = process.env.AI_GATEWAY_BASE;
+}
+
 async function main() {
   const result = streamText({
     model: 'openai/gpt-4.1',
