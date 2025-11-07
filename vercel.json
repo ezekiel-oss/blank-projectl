@@ -2,9 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "buildCommand": "pnpm build",
-  "installCommand": "pnpm install",
+  "installCommand": "corepack enable && pnpm install --no-frozen-lockfile",
   "outputDirectory": ".next",
   "env": {
     "NEXT_PUBLIC_APP_NAME": "Conversational AI"
+  },
+  "build": {
+    "env": {
+      "NODE_VERSION": "20.11.1"
+    }
   }
 }
