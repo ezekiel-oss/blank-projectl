@@ -1,14 +1,24 @@
-const BASE = process.env.THESYS_API_BASE || "https://api.thesys.ai/v1";
-const API_KEY = process.env.THESYS_API_KEY;
+const BASE =
+  process.env.AI_GATEWAY_BASE ||
+  process.env.THESYS_API_BASE ||
+  "https://api.thesys.ai/v1";
+
+const API_KEY =
+  process.env.AI_GATEWAY_API_KEY ||
+  process.env.THESYS_API_KEY;
+
 const MODEL = process.env.THESYS_MODEL || "thesys-small";
 
 /**
- * Minimal OpenAI-compatible client for Thesys-like chat API.
+ * Minimal OpenAI-compatible client for Thesys-like chat API (or a gateway).
  * Returns the assistant message text or throws on hard failure.
  */
-export async function thesysChat(messages: Array<{ role: "system" | "user" | "assistant"; content: string }>, opts?: { temperature?: number }) {
+export async function thesysChat(
+  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
+  opts?: { temperature?: number }
+) {
   if (!API_KEY) {
-    throw new Error("THESYS_API_KEY is not set");
+    throw new Error("THESYS_API_KEY or AI_GATEWAY_API_KEY is not set");
   }
 
   const res = await fetch(`${BASE}/chat/completions`, {
@@ -27,7 +37,7 @@ export async function thesysChat(messages: Array<{ role: "system" | "user" | "as
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`Thesys API error ${res.status}: ${text || res.statusText}`);
+    throw new Error(`Thesys/Gateway API error ${res.status}: ${text || res.statusText}`);
   }
 
   const data = await res.json().catch(() => ({}));
@@ -42,7 +52,10 @@ export async function thesysChat(messages: Array<{ role: "system" | "user" | "as
 /**
  * Utility to safely try Thesys and return null on failure.
  */
-export async function tryThesysChat(messages: Array<{ role: "system" | "user" | "assistant"; content: string }>, opts?: { temperature?: number }): Promise<string | null> {
+export async function tryThesysChat(
+  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
+  opts?: { temperature?: number }
+): Promise<string | null> {
   try {
     return await thesysChat(messages, opts);
   } catch {
