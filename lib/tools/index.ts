@@ -13,7 +13,7 @@ export type ToolName = keyof typeof tools;
 
 export function pickToolFromText(text: string): Tool | null {
   const q = text.toLowerCase();
-  if (q.includes("udes("weather") || q.startsWith("wx ")) return tools.weather;
+  if (q.includes("weather") || q.startsWith("wx ")) return tools.weather;
   if (q.includes("image") || q.startsWith("img ")) return tools.image_search;
   if (q.includes("search") || q.includes("lookup") || q.includes("find")) return tools.web_search;
   return null;
